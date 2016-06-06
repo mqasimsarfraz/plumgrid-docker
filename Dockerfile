@@ -14,7 +14,9 @@ RUN dpkg-divert --local --rename --add /sbin/initctl \
 RUN  apt-get update && apt-get install curl wget openssh-server -y \
 && echo "deb http://192.168.10.167/plumgrid plumgrid unstable" > /etc/apt/sources.list.d/plumgrid.list \
 &&  echo "deb http://192.168.10.167/plumgrid-extra plumgrid lxc-autoinstall" >> /etc/apt/sources.list.d/plumgrid.list \
-&&  curl -Ls http://192.168.10.167/plumgrid/GPG-KEY | /usr/bin/apt-key add -
+&&  curl -Ls http://192.168.10.167/plumgrid/GPG-KEY | /usr/bin/apt-key add - \
+&& grep -q "^deb .*precise-backports" /etc/apt/sources.list \
+|| sed "$ a\\deb http://archive.ubuntu.com/ubuntu/ precise-backports main restricted universe" -i /etc/apt/sources.list
 
 #Setup SSH config and root directory
 RUN grep -q "^Port 22" /etc/ssh/sshd_config  \
@@ -34,7 +36,7 @@ RUN  /usr/bin/apt-get -y update \
 &&  /usr/bin/apt-get -y dist-upgrade \
 &&  /usr/sbin/locale-gen en_US en_US.UTF-8 \
 &&  /usr/sbin/dpkg-reconfigure locales \
-&&  /usr/bin/apt-get -y install plumgrid-base plumgrid-ui plumgrid-cli rsyslog plumgrid-sal \
+&&  /usr/bin/apt-get -y install plumgrid-base plumgrid-ui plumgrid-cli rsyslog plumgrid-sal jq \
 &&  /usr/sbin/update-rc.d postgresql disable \
 &&  /etc/init.d/bind9 stop \
 &&  /usr/sbin/update-rc.d -f bind9 remove
