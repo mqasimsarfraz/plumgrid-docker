@@ -53,8 +53,6 @@ RUN /usr/bin/sudo -u postgres /bin/ln -s /mnt/data/postgresql/.postgresql /var/l
 && /bin/ln -s /mnt/data/conf/etc/00-pg.conf /etc/rsyslog.d/00-pg.conf \
 && /bin/ln -s /mnt/data/conf/etc/keepalived.conf /etc/keepalived/keepalived.conf \
 && /bin/ln -fs /mnt/data/conf/pg/nginx.conf /opt/pg/sal/nginx/conf.d/default.conf \
-&& /bin/ln -fs /mnt/data/ssl/nginx/default.crt /opt/pg/sal/nginx/ssl/default.crt \
-&& /bin/ln -fs /mnt/data/ssl/nginx/default.key /opt/pg/sal/nginx/ssl/default.key \
 && /bin/ln -s /mnt/data/db /opt/pg/db \
 && /bin/ln -s /mnt/data/log /opt/pg/log
 
