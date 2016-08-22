@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# This wrapper process will be used to launch PG edge
+# services in a docker container. It will perform
+# the initial config and launch the binaries
+
+pidfile=/var/run/plumgrid-edge/pengine-gateway.pid
+statusfile=/var/run/plumgrid-edge/sem_status
+plumgrid_pengine_launcher=/opt/pg/bin/launch_kspace_se_lite
+DBG="-s -p user.debug -t start_plumgrid_edge"
+
+# Initial setup and cleanup
+logger $DBG "<`date`> DEBUG: initial setup and cleanup"
+rm -rf /var/run/plumgrid-edge/tmp
+mkdir -p /var/run/plumgrid-edge/tmp
+rm -f $pidfile
+rm -f $statusfile
+
+# Prepare ifc_list file from ifcs.conf (if not present)
+logger $DBG "<`date`> DEBUG: writing ifc_list"
+/opt/pg/scripts/init_pengine.sh --prepare_ifc_list
+
+# Launch plumgrid edge binaries
+logger $DBG "<`date`> DEBUG: starting PG edge services"
+[ -r /opt/pg/etc/plumgrid.conf ] && . /opt/pg/etc/plumgrid.conf
+export LD_LIBRARY_PATH=/opt/pg/lib
+exec $plumgrid_pengine_launcher --mgmt $mgmt_dev `/opt/pg/scripts/pg_upstart_args.sh iovisor`

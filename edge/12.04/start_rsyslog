@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# This wrapper process will be used to launch rsyslog
+# daemon in a PG container
+
+DBG="-s -p user.debug -t start_rsyslog"
+ERR="-s -p user.err -t start_rsyslog"
+
+# Initial cleanup
+logger $DBG "<`date`> DEBUG: initial cleanup"
+rm -rf /var/run/rsyslogd.pid
+
+# Start Rsyslog daemon
+logger $DBG "<`date`> DEBUG: starting rsyslog daemon"
+exec /usr/sbin/rsyslogd -n
