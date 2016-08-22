@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# This wrapper process will be used to launch fabric
+# monitor script in a docker container. It will perform
+# check required to launch the script
+set -e
+
+DBG="-s -p user.debug -t start_fabric_monitor"
+
+# make sure ifc_list is available
+logger $DBG "<`date`> DEBUG: checking ifc_list file"
+for i in {1..5}; do
+  sleep 2
+  if [ -r /var/run/plumgrid-edge/ifc_list_gateway ]; then
+    break
+  fi
+  done
+[ ! -r /var/run/plumgrid-edge/ifc_list_gateway ] && echo "ifc_list file out found" && exit 2
+
+# check if script needs to launched
+logger $DBG "<`date`> DEBUG: checking fabric monitor "
+/opt/pg/scripts/fabric_mon_launch.sh --check
+
+
+logger $DBG "<`date`> DEBUG: starting fabric monitor"
+exec /opt/pg/scripts/fabric_mon_launch.sh --start
