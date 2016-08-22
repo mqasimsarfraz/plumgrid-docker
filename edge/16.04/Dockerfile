@@ -7,7 +7,7 @@ ENV  DEBIAN_FRONTEND noninteractive
 RUN dpkg-divert --local --rename --add /sbin/initctl \
 && echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d \
 && /usr/bin/apt-get -y update \
-&& /usr/bin/apt-get -y install curl bc openssh-server supervisor --no-install-recommends \
+&& /usr/bin/apt-get -y install curl bc openssh-server supervisor iproute2 --no-install-recommends \
 && echo "deb http://192.168.10.167/plumgrid plumgrid unstable" > /etc/apt/sources.list.d/plumgrid.list \
 && echo "deb http://192.168.10.167/plumgrid-extra plumgrid lxc-autoinstall" >> /etc/apt/sources.list.d/plumgrid.list \
 && curl -Ls http://192.168.10.167/plumgrid/GPG-KEY | /usr/bin/apt-key add - \
